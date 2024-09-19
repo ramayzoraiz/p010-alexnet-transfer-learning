@@ -101,6 +101,16 @@ class CustomDataset(Dataset):
         if self.transform:
             img = self.transform(img)
         return img, label
+"""
+dataset(uint8) \
+    |---> (resize) (rescale) ---> org \
+    |---> (central_crop) (resize) (flip_left_right) (recale)---> temp1 \
+    |---> (top_left_crop) (resize) (random_hue) (random_flip_left_right) (rescale)---> temp2 \
+    |---> (top_right_crop) (resize) (random_brightness) (random_flip_left_right) (rescale)---> temp3 \
+    |---> (bottom_left_crop) (resize) (random_saturation) (random_flip_left_right) (rescale)---> temp4 \
+    |---> (bottom_right_crop) (resize) (random_contrast) (random_flip_left_right) (rescale)---> temp5 \
+    org + temp1 + temp2 + temp3 + temp4 + temp5 ---> train_ds 
+"""
 # Define transformation functions
 def resize(img):
     transform = transform=v2.Compose([v2.Resize((IMAGE_SIZE, IMAGE_SIZE)), v2.ToDtype(torch.float32, scale=True)])
